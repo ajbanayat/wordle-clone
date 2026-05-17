@@ -26,6 +26,7 @@ function Board() {
     <BoardRow />
     <BoardRow />
     <BoardRow />
+    <BoardRow />
   </div>
 }
 

@@ -1,4 +1,5 @@
 :root {
+  --color-initial: #D3D6DA;
   --color-absent: #787c7e;
   --color-present: #c9b458;
   --color-correct: #6aaa64;
@@ -8,12 +9,12 @@
 
   --background-color: #FFFFFF;
 
-  --tile-empty-border-color: #D3D6DA;
+  --tile-empty-border-color: var(--color-initial);
   --tile-absent-color: var(--color-absent);
   --tile-present-color: var(--color-present);
 
-  --key-color: #D3D6DA;
-  --key-text: var(--black);
+  --key-background-color: var(--color-initial);
+  --key-text-color: var(--black);
   --key-evaluated-text-color: var(--white);
 
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -77,8 +78,8 @@
 }
 
 .key {
-  background-color: var(--key-color);
-  color: var(--key-text);
+  background-color: var(--key-background-color);
+  color: var(--key-text-color);
 
   font-size: 1.25em;
   font-weight: bold;
