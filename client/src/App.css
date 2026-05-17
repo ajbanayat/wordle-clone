@@ -64,6 +64,31 @@
   font-size: 1em;
   justify-content: center;
   align-items: center;
+
+  text-transform: uppercase;
+}
+
+.entered {
+  border: 2px solid var(--black);
+  color: var(--black);
+}
+
+.absent {
+  border: 2px solid var(--color-absent);
+  color: var(--white);
+  background-color: var(--color-absent);
+}
+
+.present {
+  border: 2px solid var(--color-present);
+  color: var(--white);
+  background-color: var(--color-present);
+}
+
+.correct {
+  border: 2px solid var(--color-present);
+  color: var(--white);
+  background-color: var(--color-present);
 }
 
 .keyboard {
