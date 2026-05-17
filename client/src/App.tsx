@@ -49,7 +49,7 @@ function Tile({ letter }: { letter: string }) {
 function Keyboard() {
   const keyValues = [
     "QWERTYUIOP".split(""),
-    "ASDFGHJKL".split(""),
+    " ASDFGHJKL ".split(""),
     "ZXCVBNM".split("")
   ]
 
@@ -71,6 +71,12 @@ function KeyboardRow({ keyValues }: { keyValues: Array<string> }) {
 }
 
 function Key({ letter }: { letter: string }) {
+  if (letter == " ") {
+    return <div className="half-key"></div>
+  } else if (letter.length > 1) {
+    return <div className="one-and-a-half-key">{ letter }</div>
+  }
+
   return <button className="key">
     { letter }
   </button>
