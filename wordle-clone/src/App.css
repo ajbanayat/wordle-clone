@@ -1,9 +1,23 @@
 :root {
-  --tile-empty-color: #FFFFFF;
+  --color-absent: #787c7e;
+  --color-present: #c9b458;
+  --color-correct: #6aaa64;
+
+  --black: #000;
+  --white: #fff;
+
+  --background-color: #FFFFFF;
+
   --tile-empty-border-color: #D3D6DA;
+  --tile-absent-color: var(--color-absent);
+  --tile-present-color: var(--color-present);
+
   --key-color: #D3D6DA;
+  --key-text: var(--black);
+  --key-evaluated-text-color: var(--white);
 
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  background-color: var(--background-color);
 }
 
 .game {
@@ -43,11 +57,40 @@
 }
 
 .tile {
-  background-color: var(--tile-empty-color);
   border: 2px solid var(--tile-empty-border-color);
 
   display: inline-flex;
   font-size: 1em;
   justify-content: center;
   align-items: center;
+}
+
+.keyboard {
+  height: 200px;
+  margin: 0 8px;
+}
+
+.keyboard-row {
+  display: flex;
+  width: 100%;
+  margin: 0 auto 8px;
+}
+
+.key {
+  background-color: var(--key-color);
+  color: var(--key-text);
+
+  font-size: 1.25em;
+  font-weight: bold;
+
+  height: 58px;
+  border: 0;
+  padding: 0;
+  margin: 0 6px 0 0;
+
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
 }
