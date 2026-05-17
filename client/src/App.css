@@ -73,6 +73,12 @@
   color: var(--black);
 }
 
+.absent {
+  border: 2px solid var(--color-absent);
+  color: var(--white);
+  background-color: var(--color-absent);
+}
+
 .keyboard {
   height: 200px;
   margin: 0 8px;

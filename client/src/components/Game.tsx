@@ -3,9 +3,19 @@ import { useState, useEffect } from "react";
 const MAX_INPUT_LENGTH = 5;
 const MAX_TURNS = 6;
 
+const Status = {
+  INITIAL: "INITIAL",
+  ABSENT: "ABSENT",
+  PRESENT: "PRESENT",
+  CORRECT: "CORRECT"
+};
+
+type Status = (typeof Status)[keyof typeof Status];
+
 function Game() {
   const [currentInput, setCurrentInput] = useState("");
   const [guesses, setGuesses] = useState<Array<string>>([]);
+  const [statuses, setStatuses] = useState<Array<Array<Status>>>([]);
   const [turn, setTurn] = useState<number>(0);
 
   useEffect(() => {
@@ -35,7 +45,8 @@ function Game() {
   };
 
   const onEnter = () => {
-    // TODO: process input
+    // use API call
+    setStatuses([...statuses, [Status.ABSENT, Status.ABSENT, Status.ABSENT, Status.ABSENT, Status.ABSENT]])
     setGuesses([...guesses, currentInput]);
     setCurrentInput("");
     setTurn(turn + 1);
@@ -51,6 +62,7 @@ function Game() {
         currentInput={currentInput}
         turn={turn}
         guesses={guesses}
+        statuses={statuses}
       />
       <Keyboard />
     </div>
@@ -61,14 +73,16 @@ function BoardContainer({
   currentInput,
   turn,
   guesses,
+  statuses
 }: {
-  currentInput: string;
-  turn: number;
-  guesses: Array<string>;
+  currentInput: string,
+  turn: number,
+  guesses: string[],
+  statuses: Status[][]
 }) {
   return (
     <div className="board-container">
-      <Board currentInput={currentInput} turn={turn} guesses={guesses} />
+      <Board currentInput={currentInput} turn={turn} guesses={guesses} statuses={statuses} />
     </div>
   );
 }
@@ -77,41 +91,50 @@ function Board({
   currentInput,
   turn,
   guesses,
+  statuses
 }: {
-  currentInput: string;
-  turn: number;
-  guesses: Array<string>;
+  currentInput: string,
+  turn: number,
+  guesses: string[],
+  statuses: Status[][]
 }) {
+  useEffect(() => {
+
+  }, [guesses, currentInput]);
+
   const rows = [];
   for (let i = 0; i < MAX_TURNS; i++) {
     const input = turn == i ? currentInput : i < turn ? guesses[i] : "";
-    rows.push(<BoardRow key={i} input={input} />);
+    const status = i < turn ? statuses[i] : [Status.INITIAL, Status.INITIAL, Status.INITIAL, Status.INITIAL, Status.INITIAL];
+    rows.push(<BoardRow key={i} input={input} rowStatus={status} />);
   }
 
   return <div className="board">{rows}</div>;
 }
 
-function BoardRow({ input }: { input: string }) {
+function BoardRow({ input, rowStatus }: { input: string, rowStatus: Status[] }) {
   return (
     <div className="board-row">
-      <Tile key={0} letter={input.length > 0 ? input[0] : ""} />
-      <Tile key={1} letter={input.length > 1 ? input[1] : ""} />
-      <Tile key={2} letter={input.length > 2 ? input[2] : ""} />
-      <Tile key={3} letter={input.length > 3 ? input[3] : ""} />
-      <Tile key={4} letter={input.length > 4 ? input[4] : ""} />
+      <Tile key={0} letter={input.length > 0 ? input[0] : ""} status={rowStatus[0]} />
+      <Tile key={1} letter={input.length > 1 ? input[1] : ""} status={rowStatus[1]} />
+      <Tile key={2} letter={input.length > 2 ? input[2] : ""} status={rowStatus[2]} />
+      <Tile key={3} letter={input.length > 3 ? input[3] : ""} status={rowStatus[3]} />
+      <Tile key={4} letter={input.length > 4 ? input[4] : ""} status={rowStatus[4]} />
     </div>
   );
 }
 
-function Tile({ letter }: { letter: string }) {
+function Tile({ letter, status }: { letter: string, status: string }) {
   const [classes, setClasses] = useState(["tile"]);
   useEffect(() => {
-    if (letter.length > 0) {
+    if (status == Status.ABSENT) {
+      setClasses(["tile", "absent"]);
+    } else if (letter.length > 0) {
       setClasses(["tile", "entered"]);
     } else {
       setClasses(["tile"]);
     }
-  }, [letter]);
+  }, [letter, status]);
 
   return <div className={classes.join(" ")}>{letter}</div>;
 }
@@ -134,7 +157,7 @@ function Keyboard() {
   );
 }
 
-function KeyboardRow({ keyValues }: { keyValues: Array<string> }) {
+function KeyboardRow({ keyValues }: { keyValues: string[] }) {
   return (
     <div className="keyboard-row">
       {keyValues.map((keyValue: string, index: number) => (
