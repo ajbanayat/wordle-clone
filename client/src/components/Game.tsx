@@ -47,6 +47,10 @@ function Game() {
   };
 
   const onEnter = () => {
+    if (guesses.includes(currentInput)) {
+      return;
+    }
+
     // use API call
     setStatuses([
       ...statuses,
