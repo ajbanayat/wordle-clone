@@ -18,7 +18,7 @@ function Game() {
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (turn >= MAX_TURNS) {
-        return;
+      return;
     }
 
     if (event.key == "Backspace" && currentInput.length > 0) {
@@ -85,21 +85,13 @@ function Board({
   const rows = [];
   for (let i = 0; i < MAX_TURNS; i++) {
     const input = turn == i ? currentInput : i < turn ? guesses[i] : "";
-    rows.push(<BoardRow key={i} rowID={i} input={input} turn={turn} />);
+    rows.push(<BoardRow key={i} input={input} />);
   }
 
   return <div className="board">{rows}</div>;
 }
 
-function BoardRow({
-  rowID,
-  input,
-  turn,
-}: {
-  rowID: number;
-  input: string;
-  turn: number;
-}) {
+function BoardRow({ input }: { input: string }) {
   return (
     <div className="board-row">
       <Tile key={0} letter={input.length > 0 ? input[0] : ""} />
