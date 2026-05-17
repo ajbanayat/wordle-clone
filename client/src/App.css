@@ -79,6 +79,18 @@
   background-color: var(--color-absent);
 }
 
+.present {
+  border: 2px solid var(--color-present);
+  color: var(--white);
+  background-color: var(--color-present);
+}
+
+.correct {
+  border: 2px solid var(--color-present);
+  color: var(--white);
+  background-color: var(--color-present);
+}
+
 .keyboard {
   height: 200px;
   margin: 0 8px;

@@ -76,6 +76,10 @@ function Tile({ letter, status }: { letter: string; status: string }) {
   useEffect(() => {
     if (status == Status.ABSENT) {
       setClasses(["tile", "absent"]);
+    } else if (status == Status.PRESENT) {
+      setClasses(["tile", "present"]);
+    } else if (status == Status.CORRECT) {
+      setClasses(["tile, correct"]);
     } else if (letter.length > 0) {
       setClasses(["tile", "entered"]);
     } else {
