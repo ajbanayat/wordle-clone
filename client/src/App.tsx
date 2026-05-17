@@ -23,7 +23,7 @@ function Game() {
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key == "Backspace" && currentInput.length > 0) {
-      setCurrentInput(currentInput.substring(0, currentInput.length - 2))
+      setCurrentInput(currentInput.substring(0, currentInput.length - 1))
     } else if (event.key == "Enter") {
       setCurrentInput("")
     } else if (isLetter(event.key) && currentInput.length < MAX_INPUT_LENGTH) {
@@ -69,7 +69,16 @@ function BoardRow({ rowID, currentInput, turn }: { rowID: number, currentInput: 
 }
 
 function Tile({ letter }: { letter: string }) {
-  return <div className="tile">
+  const [classes, setClasses] = useState(["tile"]);
+  useEffect(() => {
+    if (letter.length > 0) {
+      setClasses(["tile", "entered"])
+    } else {
+      setClasses(["tile"])
+    }
+  }, [letter]);
+
+  return <div className={classes.join(" ")}>
     {letter}
   </div>
 }

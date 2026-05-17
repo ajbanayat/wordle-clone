@@ -64,8 +64,13 @@
   font-size: 1em;
   justify-content: center;
   align-items: center;
-  
+
   text-transform: uppercase;
+}
+
+.entered {
+  border: 2px solid var(--black);
+  color: var(--black);
 }
 
 .keyboard {
