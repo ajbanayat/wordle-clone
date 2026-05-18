@@ -60,6 +60,14 @@ function Game() {
       return;
     }
 
+      fetch("/api/game/guess", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ guess: currentInput }),
+      });
+
     // use API call
     setStatuses([
       ...statuses,
