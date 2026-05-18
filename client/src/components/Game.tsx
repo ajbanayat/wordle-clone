@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import Board from "./Board";
 import Keyboard from "./Keyboard";
+import { ArrayUtils } from "../utils/arrayUtils";
 
 const MAX_INPUT_LENGTH = 5;
 const MAX_TURNS = 6;
 
 const Status = {
-  INITIAL: "INITIAL",
-  ABSENT: "ABSENT",
-  PRESENT: "PRESENT",
-  CORRECT: "CORRECT",
+  INITIAL: "INITIAL", // empty
+  TBD: "TBD", // typed but not entered
+  ABSENT: "ABSENT", // not in final word
+  PRESENT: "PRESENT", // in final word, but not in the correct position
+  CORRECT: "CORRECT", // in the correct spot
 };
 
 type Status = (typeof Status)[keyof typeof Status];
@@ -17,7 +19,9 @@ type Status = (typeof Status)[keyof typeof Status];
 function Game() {
   const [currentInput, setCurrentInput] = useState("");
   const [guesses, setGuesses] = useState<Array<string>>([]);
-  const [statuses, setStatuses] = useState<Array<Array<Status>>>([]);
+  const [statuses, setStatuses] = useState<Array<Array<Status>>>(
+    Array.from({ length: MAX_TURNS }, () => new Array(MAX_INPUT_LENGTH).fill(Status.INITIAL)),
+  );
   const [turn, setTurn] = useState<number>(0);
 
   useEffect(() => {
@@ -44,6 +48,7 @@ function Game() {
 
     if (event.key == "Backspace" && currentInput.length > 0) {
       setCurrentInput(currentInput.substring(0, currentInput.length - 1));
+      setStatuses(ArrayUtils.update2dArrayAt(statuses, turn, currentInput.length - 1, Status.INITIAL));
     } else if (
       event.key == "Enter" &&
       currentInput.length == MAX_INPUT_LENGTH &&
@@ -52,6 +57,7 @@ function Game() {
       onEnter();
     } else if (isLetter(event.key) && currentInput.length < MAX_INPUT_LENGTH) {
       setCurrentInput(currentInput + event.key.toLowerCase());
+      setStatuses(ArrayUtils.update2dArrayAt(statuses, turn, currentInput.length, Status.TBD));
     }
   };
 
@@ -61,16 +67,8 @@ function Game() {
     }
 
     // use API call
-    setStatuses([
-      ...statuses,
-      [
-        Status.ABSENT,
-        Status.ABSENT,
-        Status.ABSENT,
-        Status.ABSENT,
-        Status.ABSENT,
-      ],
-    ]);
+
+    setStatuses(ArrayUtils.update2dArrayRow(statuses, turn, Array(MAX_INPUT_LENGTH).fill(Status.ABSENT)));
     setGuesses([...guesses, currentInput]);
     setCurrentInput("");
     setTurn(turn + 1);
@@ -82,36 +80,15 @@ function Game() {
 
   return (
     <div className="game">
-      <BoardContainer
-        currentInput={currentInput}
-        turn={turn}
-        guesses={guesses}
-        statuses={statuses}
-      />
+      <div className="board-container">
+        <Board
+          currentInput={currentInput}
+          turn={turn}
+          guesses={guesses}
+          statuses={statuses}
+        />
+      </div>
       <Keyboard />
-    </div>
-  );
-}
-
-function BoardContainer({
-  currentInput,
-  turn,
-  guesses,
-  statuses,
-}: {
-  currentInput: string;
-  turn: number;
-  guesses: string[];
-  statuses: Status[][];
-}) {
-  return (
-    <div className="board-container">
-      <Board
-        currentInput={currentInput}
-        turn={turn}
-        guesses={guesses}
-        statuses={statuses}
-      />
     </div>
   );
 }

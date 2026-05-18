@@ -1,3 +1,5 @@
+import './../assets/styles/Keyboard.css';
+
 function Keyboard() {
   const keyValues = [
     "QWERTYUIOP".split(""),
@@ -27,13 +29,13 @@ function KeyboardRow({ keyValues }: { keyValues: string[] }) {
 }
 
 function Key({ letter }: { letter: string }) {
+  let className = "key";
   if (letter == " ") {
-    return <div className="half-key"></div>;
+    className = "half-key";
   } else if (letter.length > 1) {
-    return <div className="one-and-a-half-key">{letter}</div>;
+    className = "one-and-a-half-key";
   }
-
-  return <button className="key">{letter}</button>;
+  return <button className={className}>{letter}</button>;
 }
 
 export default Keyboard;
