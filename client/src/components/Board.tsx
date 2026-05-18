@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Status, MAX_TURNS } from "./Game";
+import "./../assets/styles/Board.css";
 
 function Board({
   currentInput,
@@ -17,16 +18,7 @@ function Board({
   const rows = [];
   for (let i = 0; i < MAX_TURNS; i++) {
     const input = turn == i ? currentInput : i < turn ? guesses[i] : "";
-    const status =
-      i < turn
-        ? statuses[i]
-        : [
-            Status.INITIAL,
-            Status.INITIAL,
-            Status.INITIAL,
-            Status.INITIAL,
-            Status.INITIAL,
-          ];
+    const status = statuses[i];
     rows.push(<BoardRow key={i} input={input} rowStatus={status} />);
   }
 
@@ -74,18 +66,18 @@ function BoardRow({
 function Tile({ letter, status }: { letter: string; status: string }) {
   const [classes, setClasses] = useState(["tile"]);
   useEffect(() => {
-    if (status == Status.ABSENT) {
+    if (status == Status.INITIAL) {
+      setClasses(["tile", "initial"]);
+    } else if (status == Status.ABSENT) {
       setClasses(["tile", "absent"]);
     } else if (status == Status.PRESENT) {
       setClasses(["tile", "present"]);
     } else if (status == Status.CORRECT) {
       setClasses(["tile, correct"]);
-    } else if (letter.length > 0) {
-      setClasses(["tile", "entered"]);
-    } else {
-      setClasses(["tile"]);
+    } else if (status == Status.TBD) {
+      setClasses(["tile", "tbd"]);
     }
-  }, [letter, status]);
+  }, [status]);
 
   return <div className={classes.join(" ")}>{letter}</div>;
 }

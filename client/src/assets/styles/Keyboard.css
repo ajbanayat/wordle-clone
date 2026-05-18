@@ -1,0 +1,47 @@
+.keyboard {
+  height: 200px;
+  margin: 0 8px;
+}
+
+.keyboard-row {
+  display: flex;
+  width: 100%;
+  margin: 0 auto 8px;
+}
+
+.key, .half-key, .one-and-a-half-key {
+  background-color: var(--key-background-color);
+  color: var(--key-text-color);
+
+  font-size: 1.25em;
+  font-weight: bold;
+
+  height: 58px;
+  border: 0;
+  border-radius: 4px;
+  padding: 0;
+  margin: 0 6px 0 0;
+
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+}
+
+.keyboard-row:last-child {
+  margin: 0;
+}
+
+.half-key {
+  flex: 0.5;
+  margin: 0;
+
+  background-color: var(--background-color);
+}
+
+.one-and-a-half-key {
+  font-size: 12px;
+
+  flex: 1.5;
+}
