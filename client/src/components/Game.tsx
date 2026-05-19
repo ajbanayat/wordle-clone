@@ -47,9 +47,9 @@ function Game() {
       return;
     }
 
-    if (key == "Backspace") {
+    if (key.toLowerCase() == "backspace" || key.toLowerCase() == "delete") {
       handleBackspace();
-    } else if (key == "Enter") {
+    } else if (key.toLowerCase() == "enter") {
       handleEnter();
     } else if (isLetter(key)) {
       handleAlphabetInput(key);
@@ -125,7 +125,7 @@ function Game() {
           statuses={statuses}
         />
       </div>
-      <Keyboard />
+      <Keyboard handleKeyInput={handleKeyInput} />
     </div>
   );
 }
