@@ -20,15 +20,17 @@ function Game() {
   const [currentInput, setCurrentInput] = useState("");
   const [guesses, setGuesses] = useState<Array<string>>([]);
   const [statuses, setStatuses] = useState<Array<Array<Status>>>(
-    Array.from({ length: MAX_TURNS }, () => new Array(MAX_INPUT_LENGTH).fill(Status.INITIAL)),
+    Array.from({ length: MAX_TURNS }, () =>
+      new Array(MAX_INPUT_LENGTH).fill(Status.INITIAL),
+    ),
   );
   const [turn, setTurn] = useState<number>(0);
 
   useEffect(() => {
-    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keydown", (e) => handleKeyInput(e.key));
 
     return () => {
-      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keydown", (e) => handleKeyInput(e.key));
     };
   }, [currentInput]);
 
@@ -40,38 +42,73 @@ function Game() {
     })();
   }, []);
 
-
-  const onKeyDown = (event: KeyboardEvent) => {
+  const handleKeyInput = (key: string) => {
     if (turn >= MAX_TURNS) {
       return;
     }
 
-    if (event.key == "Backspace" && currentInput.length > 0) {
-      setCurrentInput(currentInput.substring(0, currentInput.length - 1));
-      setStatuses(ArrayUtils.update2dArrayAt(statuses, turn, currentInput.length - 1, Status.INITIAL));
-    } else if (
-      event.key == "Enter" &&
-      currentInput.length == MAX_INPUT_LENGTH &&
-      turn < MAX_TURNS
-    ) {
-      onEnter();
-    } else if (isLetter(event.key) && currentInput.length < MAX_INPUT_LENGTH) {
-      setCurrentInput(currentInput + event.key.toLowerCase());
-      setStatuses(ArrayUtils.update2dArrayAt(statuses, turn, currentInput.length, Status.TBD));
+    if (key == "Backspace") {
+      handleBackspace();
+    } else if (key == "Enter") {
+      handleEnter();
+    } else if (isLetter(key)) {
+      handleAlphabetInput(key);
     }
   };
 
-  const onEnter = () => {
+  const handleBackspace = () => {
+    if (currentInput.length <= 0) {
+      return;
+    }
+
+    setCurrentInput(currentInput.substring(0, currentInput.length - 1));
+    setStatuses(
+      ArrayUtils.update2dArrayAt(
+        statuses,
+        turn,
+        currentInput.length - 1,
+        Status.INITIAL,
+      ),
+    );
+  };
+
+  const handleEnter = () => {
+    if (currentInput.length < MAX_INPUT_LENGTH || turn >= MAX_TURNS) {
+      return;
+    }
+
     if (guesses.includes(currentInput)) {
       return;
     }
 
     // use API call
 
-    setStatuses(ArrayUtils.update2dArrayRow(statuses, turn, Array(MAX_INPUT_LENGTH).fill(Status.ABSENT)));
+    setStatuses(
+      ArrayUtils.update2dArrayRow(
+        statuses,
+        turn,
+        Array(MAX_INPUT_LENGTH).fill(Status.ABSENT),
+      ),
+    );
     setGuesses([...guesses, currentInput]);
     setCurrentInput("");
     setTurn(turn + 1);
+  };
+
+  const handleAlphabetInput = (key: string) => {
+    if (currentInput.length >= MAX_INPUT_LENGTH) {
+      return;
+    }
+
+    setCurrentInput(currentInput + key.toLowerCase());
+    setStatuses(
+      ArrayUtils.update2dArrayAt(
+        statuses,
+        turn,
+        currentInput.length,
+        Status.TBD,
+      ),
+    );
   };
 
   const isLetter = (key: string) => {
