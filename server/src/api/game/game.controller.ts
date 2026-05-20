@@ -1,6 +1,30 @@
 import type { RequestHandler } from "express";
+import * as gameService from "./game.service.js";
 
-export const handleGuess: RequestHandler = (req, res) => {
-  console.log(req.body);
-  res.json({received: req.body});
+type GuessBody = {
+  guess: string;
+}
+
+// #region Controllers
+export const newGame: RequestHandler = (req, res) => {
+  const game = gameService.createGame();
+  return res.json(game);
 };
+
+export const handleGuess: RequestHandler<{}, any, GuessBody> = (req, res) => {
+  const { guess } = req.body;
+  const result = processResult(guess);
+  return res.json(result);
+};
+
+// #endregion
+
+// #region Helpers
+function processResult(guess: string) {
+  return {
+    guess,
+    processed: true,
+  };
+}
+
+// #endregion

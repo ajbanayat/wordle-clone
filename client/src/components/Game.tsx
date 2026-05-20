@@ -27,20 +27,16 @@ function Game() {
   const [turn, setTurn] = useState<number>(0);
 
   useEffect(() => {
+    startGame();
+  }, []);
+
+  useEffect(() => {
     window.addEventListener("keydown", (e) => handleKeyInput(e.key));
 
     return () => {
       window.removeEventListener("keydown", (e) => handleKeyInput(e.key));
     };
   }, [currentInput]);
-
-  useEffect(() => {
-    (async () => {
-      const res = await fetch("http://localhost:3000/api/hello");
-      const data = await res.json();
-      console.log(data);
-    })();
-  }, []);
 
   const handleKeyInput = (key: string) => {
     if (turn >= MAX_TURNS) {
@@ -122,6 +118,14 @@ function Game() {
   const isLetter = (key: string) => {
     return /^[a-zA-Z]$/m.test(key);
   };
+
+  async function startGame() {
+    const res = await fetch("/api/game/new", {
+      method: "POST",
+    });
+    const game = await res.json();
+    console.log("Game started", game);
+    }
 
   return (
     <div className="game">
