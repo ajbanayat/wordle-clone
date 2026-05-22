@@ -83,7 +83,7 @@ function Tile({ letter, status }: { letter: string; status: string }) {
     } else if (status == Status.PRESENT) {
       setClasses(["tile", "present"]);
     } else if (status == Status.CORRECT) {
-      setClasses(["tile, correct"]);
+      setClasses(["tile", "correct"]);
     } else if (status == Status.TBD) {
       setClasses(["tile", "tbd"]);
     }

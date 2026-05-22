@@ -31,10 +31,11 @@ function Game() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("keydown", (e) => handleKeyInput(e.key));
+    const listener = (e: KeyboardEvent) => handleKeyInput(e.key);
+    window.addEventListener("keydown", listener);
 
     return () => {
-      window.removeEventListener("keydown", (e) => handleKeyInput(e.key));
+      window.removeEventListener("keydown", listener);
     };
   }, [currentInput]);
 
