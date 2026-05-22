@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
-import { Status, MAX_TURNS } from "./Game";
+import { MAX_TURNS } from "./Game";
 import "./../assets/styles/Board.css";
+
+const Status = {
+  INITIAL: "INITIAL", // empty
+  TBD: "TBD", // typed but not entered
+  ABSENT: "ABSENT", // not in final word
+  PRESENT: "PRESENT", // in final word, but not in the correct position
+  CORRECT: "CORRECT", // in the correct spot
+} as const;
+
+type Status = (typeof Status)[keyof typeof Status];
 
 function Board({
   currentInput,
