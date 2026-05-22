@@ -6,7 +6,9 @@ export function updateAt<T>(arr: Array<T>, rowIndex: number, value: T): Array<T>
 
 export function update2dArrayAt<T>(arr: Array<Array<T>>, rowIndex: number, colIndex: number, value: T): Array<Array<T>> {
     const update = [...arr];
-    update[rowIndex][colIndex] = value;
+    const row = [...update[rowIndex]]
+    row[colIndex] = value;
+    update[rowIndex] = row;
     return update;
 }
 
