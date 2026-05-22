@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { MAX_TURNS } from "./Game";
 import "./../assets/styles/Board.css";
 
