@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Board from "./Board";
 import Keyboard from "./Keyboard";
 import { ArrayUtils } from "../utils/arrayUtils";
@@ -26,21 +26,31 @@ function Game() {
   );
   const [turn, setTurn] = useState<number>(0);
 
-  useEffect(() => {
-    startGame();
-  }, []);
+  const currentInputRef = useRef(currentInput);
+  const turnRef = useRef(turn);
+  const guessesRef = useRef(guesses);
+  const statusesRef = useRef(statuses);
 
   useEffect(() => {
+    startGame();
+
     const listener = (e: KeyboardEvent) => handleKeyInput(e.key);
     window.addEventListener("keydown", listener);
 
     return () => {
       window.removeEventListener("keydown", listener);
     };
-  }, [currentInput]);
+  }, []);
+
+  useEffect(() => {
+    currentInputRef.current = currentInput;
+    turnRef.current = turn;
+    guessesRef.current = guesses;
+    statusesRef.current = statuses;
+  }, [currentInput, turn, guesses, statuses]);
 
   const handleKeyInput = (key: string) => {
-    if (turn >= MAX_TURNS) {
+    if (turnRef.current >= MAX_TURNS) {
       return;
     }
 
@@ -54,27 +64,27 @@ function Game() {
   };
 
   const handleBackspace = () => {
-    if (currentInput.length <= 0) {
+    if (currentInputRef.current.length <= 0) {
       return;
     }
 
-    setCurrentInput(currentInput.substring(0, currentInput.length - 1));
+    setCurrentInput(currentInputRef.current.substring(0, currentInputRef.current.length - 1));
     setStatuses(
       ArrayUtils.update2dArrayAt(
-        statuses,
-        turn,
-        currentInput.length - 1,
+        statusesRef.current,
+        turnRef.current,
+        currentInputRef.current.length,
         Status.INITIAL,
       ),
     );
   };
 
   const handleEnter = () => {
-    if (currentInput.length < MAX_INPUT_LENGTH || turn >= MAX_TURNS) {
+    if (currentInputRef.current.length < MAX_INPUT_LENGTH || turnRef.current >= MAX_TURNS) {
       return;
     }
 
-    if (guesses.includes(currentInput)) {
+    if (guessesRef.current.includes(currentInputRef.current)) {
       return;
     }
 
@@ -83,32 +93,32 @@ function Game() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ guess: currentInput }),
+      body: JSON.stringify({ guess: currentInputRef.current }),
     });
 
     setStatuses(
       ArrayUtils.update2dArrayRow(
-        statuses,
-        turn,
+        statusesRef.current,
+        turnRef.current,
         Array(MAX_INPUT_LENGTH).fill(Status.ABSENT),
       ),
     );
-    setGuesses([...guesses, currentInput]);
+    setGuesses([...guessesRef.current, currentInputRef.current]);
     setCurrentInput("");
-    setTurn(turn + 1);
+    setTurn(turnRef.current + 1);
   };
 
   const handleAlphabetInput = (key: string) => {
-    if (currentInput.length >= MAX_INPUT_LENGTH) {
+    if (currentInputRef.current.length >= MAX_INPUT_LENGTH) {
       return;
     }
 
-    setCurrentInput(currentInput + key.toLowerCase());
+    setCurrentInput(currentInputRef.current + key.toLowerCase());
     setStatuses(
       ArrayUtils.update2dArrayAt(
-        statuses,
-        turn,
-        currentInput.length,
+        statusesRef.current,
+        turnRef.current,
+        currentInputRef.current.length,
         Status.TBD,
       ),
     );
