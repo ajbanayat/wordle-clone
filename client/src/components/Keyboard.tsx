@@ -55,7 +55,7 @@ function KeyboardRow({
         <Key
           key={index}
           letter={keyValue}
-          status={keyStatuses[keyValue]}
+          status={keyStatuses[keyValue.toLowerCase()]}
           handleKeyInput={handleKeyInput}
         />
       ))}
