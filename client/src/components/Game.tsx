@@ -44,10 +44,19 @@ function Game() {
 
   useEffect(() => {
     currentInputRef.current = currentInput;
+  }, [currentInput]);
+
+  useEffect(() => {
     turnRef.current = turn;
+  }, [turn]);
+
+  useEffect(() => {
     guessesRef.current = guesses;
+  }, [guesses]);
+
+  useEffect(() => {
     statusesRef.current = statuses;
-  }, [currentInput, turn, guesses, statuses]);
+  }, [statuses]);
 
   const handleKeyInput = (key: string) => {
     if (turnRef.current >= MAX_TURNS) {
