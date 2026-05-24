@@ -55,7 +55,7 @@ function KeyboardRow({
         <Key
           key={index}
           letter={keyValue}
-          status={keyStatuses[keyValue.toLowerCase()]}
+          status={keyStatuses[keyValue]}
           handleKeyInput={handleKeyInput}
         />
       ))}
@@ -79,7 +79,7 @@ function Key({
     className = "one-and-a-half-key";
   }
   return (
-    <button className={`${className} ${status}`} onClick={() => handleKeyInput(letter)}>
+    <button className={`${className} ${status.toLowerCase()}`} onClick={() => handleKeyInput(letter)}>
       {letter}
     </button>
   );
