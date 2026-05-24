@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { MAX_TURNS } from "./Game";
+import { MAX_INPUT_LENGTH, MAX_TURNS } from "./Game";
 import "./../assets/styles/Board.css";
 
 const Status = {
@@ -42,33 +42,18 @@ function BoardRow({
   input: string;
   rowStatus: Status[];
 }) {
+  const tiles = [];
+  for (let i = 0; i < MAX_INPUT_LENGTH; i++) {
+    tiles.push(<Tile 
+        key={i}
+        letter={input.length > i ? input[i] : ""}
+        status={rowStatus[i]}
+    />);
+  }
+
   return (
     <div className="board-row">
-      <Tile
-        key={0}
-        letter={input.length > 0 ? input[0] : ""}
-        status={rowStatus[0]}
-      />
-      <Tile
-        key={1}
-        letter={input.length > 1 ? input[1] : ""}
-        status={rowStatus[1]}
-      />
-      <Tile
-        key={2}
-        letter={input.length > 2 ? input[2] : ""}
-        status={rowStatus[2]}
-      />
-      <Tile
-        key={3}
-        letter={input.length > 3 ? input[3] : ""}
-        status={rowStatus[3]}
-      />
-      <Tile
-        key={4}
-        letter={input.length > 4 ? input[4] : ""}
-        status={rowStatus[4]}
-      />
+      { tiles }
     </div>
   );
 }

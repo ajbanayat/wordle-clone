@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Board from "./Board";
 import Keyboard from "./Keyboard";
 import { ArrayUtils } from "../utils/arrayUtils";
@@ -25,35 +25,107 @@ function Game() {
     ),
   );
   const [turn, setTurn] = useState<number>(0);
+  const [keyboardStatuses, setKeyboardStatuses] = useState<{
+    [letter: string]: Status;
+  }>({
+    A: Status.INITIAL,
+    B: Status.INITIAL,
+    C: Status.INITIAL,
+    D: Status.INITIAL,
+    E: Status.INITIAL,
+    F: Status.INITIAL,
+    G: Status.INITIAL,
+    H: Status.INITIAL,
+    I: Status.INITIAL,
+    J: Status.INITIAL,
+    K: Status.INITIAL,
+    L: Status.INITIAL,
+    M: Status.INITIAL,
+    N: Status.INITIAL,
+    O: Status.INITIAL,
+    P: Status.INITIAL,
+    Q: Status.INITIAL,
+    R: Status.INITIAL,
+    S: Status.INITIAL,
+    T: Status.INITIAL,
+    U: Status.INITIAL,
+    V: Status.INITIAL,
+    W: Status.INITIAL,
+    X: Status.INITIAL,
+    Y: Status.INITIAL,
+    Z: Status.INITIAL,
+    ENTER: Status.INITIAL,
+    DELETE: Status.INITIAL,
+    " ": Status.INITIAL,
+  });
+
+  const currentInputRef = useRef(currentInput);
+  const turnRef = useRef(turn);
+  const guessesRef = useRef(guesses);
+  const statusesRef = useRef(statuses);
+  const keyboardStatusRef = useRef(keyboardStatuses);
 
   useEffect(() => {
     startGame();
-  }, []);
 
-  useEffect(() => {
     const listener = (e: KeyboardEvent) => handleKeyInput(e.key);
     window.addEventListener("keydown", listener);
 
     return () => {
       window.removeEventListener("keydown", listener);
     };
+  }, []);
+
+  useEffect(() => {
+    currentInputRef.current = currentInput;
   }, [currentInput]);
 
+  useEffect(() => {
+    turnRef.current = turn;
+  }, [turn]);
+
+  useEffect(() => {
+    guessesRef.current = guesses;
+  }, [guesses]);
+
+  useEffect(() => {
+    statusesRef.current = statuses;
+  }, [statuses]);
+
   const handleKeyInput = (key: string) => {
-    if (turn >= MAX_TURNS) {
+    if (turnRef.current >= MAX_TURNS) {
       return;
     }
 
     if (key.toLowerCase() == "backspace" || key.toLowerCase() == "delete") {
-      handleBackspace();
+      handleBackspace(
+        currentInputRef.current,
+        turnRef.current,
+        statusesRef.current,
+      );
     } else if (key.toLowerCase() == "enter") {
-      handleEnter();
+      handleEnter(
+        currentInputRef.current,
+        turnRef.current,
+        guessesRef.current,
+        statusesRef.current,
+        keyboardStatusRef.current,
+      );
     } else if (isLetter(key)) {
-      handleAlphabetInput(key);
+      handleAlphabetInput(
+        key,
+        currentInputRef.current,
+        turnRef.current,
+        statusesRef.current,
+      );
     }
   };
 
-  const handleBackspace = () => {
+  const handleBackspace = (
+    currentInput: string,
+    turn: number,
+    statuses: Status[][],
+  ) => {
     if (currentInput.length <= 0) {
       return;
     }
@@ -69,8 +141,17 @@ function Game() {
     );
   };
 
-  const handleEnter = () => {
-    if (currentInput.length < MAX_INPUT_LENGTH || turn >= MAX_TURNS) {
+  const handleEnter = (
+    currentInput: string,
+    turn: number,
+    guesses: string[],
+    statuses: Status[][],
+    keyboardStatuses: { [key: string]: Status },
+  ) => {
+    if (
+      currentInput.length < MAX_INPUT_LENGTH ||
+      turnRef.current >= MAX_TURNS
+    ) {
       return;
     }
 
@@ -86,6 +167,13 @@ function Game() {
       body: JSON.stringify({ guess: currentInput }),
     });
 
+    // change later
+    for (let i = 0; i < currentInput.length; i++) {
+      const letter = currentInput[i].toUpperCase();
+      keyboardStatuses[letter] = Status.ABSENT;
+    }
+    setKeyboardStatuses({ ...keyboardStatuses });
+
     setStatuses(
       ArrayUtils.update2dArrayRow(
         statuses,
@@ -98,7 +186,12 @@ function Game() {
     setTurn(turn + 1);
   };
 
-  const handleAlphabetInput = (key: string) => {
+  const handleAlphabetInput = (
+    key: string,
+    currentInput: string,
+    turn: number,
+    statuses: Status[][],
+  ) => {
     if (currentInput.length >= MAX_INPUT_LENGTH) {
       return;
     }
@@ -124,7 +217,7 @@ function Game() {
     });
     const game = await res.json();
     console.log("Game started", game);
-    }
+  }
 
   return (
     <div className="game">
@@ -136,7 +229,10 @@ function Game() {
           statuses={statuses}
         />
       </div>
-      <Keyboard handleKeyInput={handleKeyInput} />
+      <Keyboard
+        keyStatuses={keyboardStatuses}
+        handleKeyInput={handleKeyInput}
+      />
     </div>
   );
 }

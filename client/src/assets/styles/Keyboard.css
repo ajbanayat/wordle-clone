@@ -45,3 +45,18 @@
 
   flex: 1.5;
 }
+
+.absent {
+  color: var(--key-evaluated-text-color);
+  background-color: var(--color-absent);
+}
+
+.present {
+  color: var(--key-evaluated-text-color);
+  background-color: var(--color-present);
+}
+
+.correct {
+  color: var(--key-evaluated-text-color);
+  background-color: var(--color-correct);
+}
