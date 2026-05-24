@@ -25,6 +25,37 @@ function Game() {
     ),
   );
   const [turn, setTurn] = useState<number>(0);
+  const [keyboardStatuses, _] = useState<{[letter: string]: Status}>({
+    "a": Status.INITIAL,
+    "b": Status.INITIAL,
+    "c": Status.INITIAL,
+    "d": Status.INITIAL,
+    "e": Status.INITIAL,
+    "f": Status.INITIAL,
+    "g": Status.INITIAL,
+    "h": Status.INITIAL,
+    "i": Status.INITIAL,
+    "j": Status.INITIAL,
+    "k": Status.INITIAL,
+    "l": Status.INITIAL,
+    "m": Status.INITIAL,
+    "n": Status.INITIAL,
+    "o": Status.INITIAL,
+    "p": Status.INITIAL,
+    "q": Status.INITIAL,
+    "r": Status.INITIAL,
+    "s": Status.INITIAL,
+    "t": Status.INITIAL,
+    "u": Status.INITIAL,
+    "v": Status.INITIAL,
+    "w": Status.INITIAL,
+    "x": Status.INITIAL,
+    "y": Status.INITIAL,
+    "z": Status.INITIAL,
+    "enter": Status.INITIAL,
+    "delete": Status.INITIAL,
+    " ": Status.INITIAL,
+  });
 
   const currentInputRef = useRef(currentInput);
   const turnRef = useRef(turn);
@@ -155,7 +186,7 @@ function Game() {
           statuses={statuses}
         />
       </div>
-      <Keyboard handleKeyInput={handleKeyInput} />
+      <Keyboard keyStatuses={keyboardStatuses} handleKeyInput={handleKeyInput} />
     </div>
   );
 }
