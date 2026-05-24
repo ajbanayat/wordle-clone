@@ -55,36 +55,36 @@ function Game() {
     }
 
     if (key.toLowerCase() == "backspace" || key.toLowerCase() == "delete") {
-      handleBackspace();
+      handleBackspace(currentInputRef.current, turnRef.current, statusesRef.current);
     } else if (key.toLowerCase() == "enter") {
-      handleEnter();
+      handleEnter(currentInputRef.current, turnRef.current, guessesRef.current, statusesRef.current);
     } else if (isLetter(key)) {
-      handleAlphabetInput(key);
+      handleAlphabetInput(key, currentInputRef.current, turnRef.current, statusesRef.current);
     }
   };
 
-  const handleBackspace = () => {
-    if (currentInputRef.current.length <= 0) {
+  const handleBackspace = (currentInput: string, turn: number, statuses: Array<Array<Status>>) => {
+    if (currentInput.length <= 0) {
       return;
     }
 
-    setCurrentInput(currentInputRef.current.substring(0, currentInputRef.current.length - 1));
+    setCurrentInput(currentInput.substring(0, currentInput.length - 1));
     setStatuses(
       ArrayUtils.update2dArrayAt(
-        statusesRef.current,
-        turnRef.current,
-        currentInputRef.current.length,
+        statuses,
+        turn,
+        currentInput.length - 1,
         Status.INITIAL,
       ),
     );
   };
 
-  const handleEnter = () => {
-    if (currentInputRef.current.length < MAX_INPUT_LENGTH || turnRef.current >= MAX_TURNS) {
+  const handleEnter = (currentInput: string, turn: number, guesses: Array<string>, statuses: Array<Array<Status>>) => {
+    if (currentInput.length < MAX_INPUT_LENGTH || turnRef.current >= MAX_TURNS) {
       return;
     }
 
-    if (guessesRef.current.includes(currentInputRef.current)) {
+    if (guesses.includes(currentInput)) {
       return;
     }
 
@@ -93,32 +93,32 @@ function Game() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ guess: currentInputRef.current }),
+      body: JSON.stringify({ guess: currentInput }),
     });
 
     setStatuses(
       ArrayUtils.update2dArrayRow(
-        statusesRef.current,
-        turnRef.current,
+        statuses,
+        turn,
         Array(MAX_INPUT_LENGTH).fill(Status.ABSENT),
       ),
     );
-    setGuesses([...guessesRef.current, currentInputRef.current]);
+    setGuesses([...guesses, currentInput]);
     setCurrentInput("");
-    setTurn(turnRef.current + 1);
+    setTurn(turn + 1);
   };
 
-  const handleAlphabetInput = (key: string) => {
-    if (currentInputRef.current.length >= MAX_INPUT_LENGTH) {
+  const handleAlphabetInput = (key: string, currentInput: string, turn: number, statuses: Array<Array<Status>>) => {
+    if (currentInput.length >= MAX_INPUT_LENGTH) {
       return;
     }
 
-    setCurrentInput(currentInputRef.current + key.toLowerCase());
+    setCurrentInput(currentInput + key.toLowerCase());
     setStatuses(
       ArrayUtils.update2dArrayAt(
-        statusesRef.current,
-        turnRef.current,
-        currentInputRef.current.length,
+        statuses,
+        turn,
+        currentInput.length,
         Status.TBD,
       ),
     );
