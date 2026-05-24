@@ -12,7 +12,7 @@ const Status = {
   ABSENT: "ABSENT", // not in final word
   PRESENT: "PRESENT", // in final word, but not in the correct position
   CORRECT: "CORRECT", // in the correct spot
-};
+} as const;
 
 type Status = (typeof Status)[keyof typeof Status];
 
@@ -31,10 +31,11 @@ function Game() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("keydown", (e) => handleKeyInput(e.key));
+    const listener = (e: KeyboardEvent) => handleKeyInput(e.key);
+    window.addEventListener("keydown", listener);
 
     return () => {
-      window.removeEventListener("keydown", (e) => handleKeyInput(e.key));
+      window.removeEventListener("keydown", listener);
     };
   }, [currentInput]);
 
@@ -77,15 +78,13 @@ function Game() {
       return;
     }
 
-      fetch("/api/game/guess", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ guess: currentInput }),
-      });
-
-    // use API call
+    fetch("/api/game/guess", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ guess: currentInput }),
+    });
 
     setStatuses(
       ArrayUtils.update2dArrayRow(
@@ -142,4 +141,4 @@ function Game() {
   );
 }
 
-export { Game, Status, MAX_INPUT_LENGTH, MAX_TURNS };
+export { Game, MAX_INPUT_LENGTH, MAX_TURNS };

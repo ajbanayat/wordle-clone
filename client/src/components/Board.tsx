@@ -1,6 +1,16 @@
-import { useState, useEffect } from "react";
-import { Status, MAX_TURNS } from "./Game";
+import { useEffect } from "react";
+import { MAX_TURNS } from "./Game";
 import "./../assets/styles/Board.css";
+
+const Status = {
+  INITIAL: "INITIAL", // empty
+  TBD: "TBD", // typed but not entered
+  ABSENT: "ABSENT", // not in final word
+  PRESENT: "PRESENT", // in final word, but not in the correct position
+  CORRECT: "CORRECT", // in the correct spot
+} as const;
+
+type Status = (typeof Status)[keyof typeof Status];
 
 function Board({
   currentInput,
@@ -64,20 +74,18 @@ function BoardRow({
 }
 
 function Tile({ letter, status }: { letter: string; status: string }) {
-  const [classes, setClasses] = useState(["tile"]);
-  useEffect(() => {
-    if (status == Status.INITIAL) {
-      setClasses(["tile", "initial"]);
-    } else if (status == Status.ABSENT) {
-      setClasses(["tile", "absent"]);
-    } else if (status == Status.PRESENT) {
-      setClasses(["tile", "present"]);
-    } else if (status == Status.CORRECT) {
-      setClasses(["tile, correct"]);
-    } else if (status == Status.TBD) {
-      setClasses(["tile", "tbd"]);
-    }
-  }, [status]);
+  const classes = ["tile"];
+  if (status == Status.INITIAL) {
+    classes.push("initial");
+  } else if (status == Status.ABSENT) {
+    classes.push("absent");
+  } else if (status == Status.PRESENT) {
+    classes.push("present");
+  } else if (status == Status.CORRECT) {
+    classes.push("correct");
+  } else if (status == Status.TBD) {
+    classes.push("tbd");
+  }
 
   return <div className={classes.join(" ")}>{letter}</div>;
 }
