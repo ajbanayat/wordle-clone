@@ -2,17 +2,10 @@ import { useState, useEffect } from "react";
 import Board from "./Board";
 import Keyboard from "./Keyboard";
 import { ArrayUtils } from "../utils/arrayUtils";
+import { Status } from "../../../shared/status";
 
 const MAX_INPUT_LENGTH = 5;
 const MAX_TURNS = 6;
-
-const Status = {
-  INITIAL: "INITIAL", // empty
-  TBD: "TBD", // typed but not entered
-  ABSENT: "ABSENT", // not in final word
-  PRESENT: "PRESENT", // in final word, but not in the correct position
-  CORRECT: "CORRECT", // in the correct spot
-} as const;
 
 type Status = (typeof Status)[keyof typeof Status];
 
